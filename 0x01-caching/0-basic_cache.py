@@ -9,6 +9,9 @@ from base_caching import BaseCaching
 class BasicCache(BaseCaching):
     """BasicCache class that inherits from BaseCaching and implements a
     simple caching system."""
+    def __init__(self):
+        """ Initialize class"""
+        super().__init__()
 
     def put(self, key, item):
         """Adds an item to the cache if key and item are not None."""
