@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-This module sets Babel’s default locale ("en") and timezone ("UTC") 
+This module sets Babel’s default locale ("en") and timezone ("UTC")
 using the get_locale function"""
 from flask import Flask, render_template, request
 from flask_babel import Babel
