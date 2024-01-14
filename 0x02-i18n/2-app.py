@@ -20,17 +20,17 @@ babel = Babel(app)
 app.config.from_object(Config)
 
 
+@babel.localeselector
+def get_locale():
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
+
+
 @app.route('/', strict_slashes=False)
 def get_index() -> str:
     """
     return html
     """
-    return render_template('1-index.html')
-
-
-@babel.localeselector
-def get_locale():
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    return render_template('2-index.html')
 
 
 if __name__ == "__main__":
