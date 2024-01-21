@@ -1,40 +1,32 @@
 #!/usr/bin/env python3
 """
-This module sets Babel’s default locale ("en") and timezone ("UTC").
+A Basic flask application
 """
-from typing import Dict, Union
-from flask import Flask, render_template, request, g
+from typing import (
+    Dict, Union
+)
+
+from flask import Flask
+from flask import g, request
+from flask import render_template
 from flask_babel import Babel
 
 
-class Config():
+class Config(object):
     """
-    configure available languages in our app
+    Application configuration class
     """
-    LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE = "en"
-    BABEL_DEFAULT_TIMEZONE = "UTC"
+    LANGUAGES = ['en', 'fr']
+    BABEL_DEFAULT_LOCALE = 'en'
+    BABEL_DEFAULT_TIMEZONE = 'UTC'
 
 
+# Instantiate the application object
 app = Flask(__name__)
-babel = Babel(app)
 app.config.from_object(Config)
 
-
-@babel.localeselector
-def get_locale() -> str:
-    """Determines the appropriate locale based on priority..
-    """
-    options = [
-        request.args.get('locale', '').strip()
-        g.user.get('locale', None) if g.user else None,
-        request.accept_languages.best_match(app.config["LANGUAGES"]),
-        Config.BABEL_DEFAULT_LOCALE
-    ]
-
-    for locale in options:
-        if locale and locale in Config.LANGUAGES:
-            return locale
+# Wrap the application with Babel
+babel = Babel(app)
 
 
 users = {
@@ -53,11 +45,27 @@ def get_user(id) -> Union[Dict[str, Union[str, None]], None]:
     Returns:
         (Dict): user dictionary if id is valid else None
     """
-    return users.get(int(id), 0)
+    return users.get(int(id), {})
+
+
+@babel.localeselector
+def get_locale() -> str:
+    """
+    Gets locale from request object
+    """
+    options = [
+        request.args.get('locale', '').strip(),
+        g.user.get('locale', None) if g.user else None,
+        request.accept_languages.best_match(app.config['LANGUAGES']),
+        Config.BABEL_DEFAULT_LOCALE
+    ]
+    for locale in options:
+        if locale and locale in Config.LANGUAGES:
+            return locale
 
 
 @app.before_request
-def before_request():
+def before_request() -> None:
     """
     Adds valid user to the global session object `g`
     """
@@ -65,12 +73,12 @@ def before_request():
 
 
 @app.route('/', strict_slashes=False)
-def get_index() -> str:
+def index() -> str:
     """
-    return html
+    Renders a basic html template
     """
     return render_template('6-index.html')
 
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+if __name__ == '__main__':
+    app.run()
