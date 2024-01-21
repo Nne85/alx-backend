@@ -25,14 +25,16 @@ app.config.from_object(Config)
 def get_locale() -> str:
     """Determines the appropriate locale based on priority..
     """
-    locale = request.args.get('locale')
-    if not locale and g.user:
-        locale = g.user.get("locale")
+    options = [
+        request.args.get('locale', '').strip()
+        g.user.get('locale', None) if g.user else None,
+        request.accept_languages.best_match(app.config["LANGUAGES"]),
+        Config.BABEL_DEFAULT_LOCALE
+    ]
 
-    if not local:
-        locale = request.accept_languages.best_match(app.config["LANGUAGES"])
-
-    return locale or app.config["BABEL_DEFAULT_LOCALE"]
+    for locale in options:
+        if locale and locale in Config.LANGUAGES:
+            return locale
 
 
 users = {
