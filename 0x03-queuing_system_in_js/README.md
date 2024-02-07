@@ -1,1 +1,1 @@
-Tasks on Queuing System in JS
+ Queuing System in JS
